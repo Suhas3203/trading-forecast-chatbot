@@ -1,0 +1,39 @@
+# ─── Python ───────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+
+# ─── Environment / Secrets ────────────────────────────────
+.env
+*.env.local
+
+# ─── Node ─────────────────────────────────────────────────
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# ─── Poetry ───────────────────────────────────────────────
+# Keep poetry.lock committed — ensures reproducible installs
+# Keep pyproject.toml and poetry.toml committed
+
+# ─── OS ───────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── IDE ──────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ─── Logs ─────────────────────────────────────────────────
+*.log
