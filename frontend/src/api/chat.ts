@@ -1,5 +1,7 @@
 import { Message } from '../types'
 
+const API_BASE = import.meta.env.VITE_API_URL ?? ''
+
 export async function sendChat(messages: Message[]): Promise<string> {
   const payload = {
     messages: messages
@@ -7,7 +9,7 @@ export async function sendChat(messages: Message[]): Promise<string> {
       .map((m) => ({ role: m.role, content: m.content })),
   }
 
-  const response = await fetch('/api/chat', {
+  const response = await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
