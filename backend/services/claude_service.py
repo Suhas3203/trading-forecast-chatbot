@@ -1,5 +1,6 @@
 import anthropic
 import json
+import os
 import time
 from services.market_service import (
     get_market_overview,
@@ -11,7 +12,12 @@ from services.ipo_service import get_ipo_gmp, get_upcoming_ipos
 
 client = anthropic.Anthropic()
 
-_RETRY_DELAYS = [2, 5, 10]  # seconds between attempts for rate limit errors
+# Haiku = higher rate limits + faster + cheaper (good for dev/free tier)
+# Sonnet = smarter responses (good for production)
+# Override via CLAUDE_MODEL in .env
+_MODEL = os.getenv("CLAUDE_MODEL", "claude-haiku-4-5-20251001")
+
+_RETRY_DELAYS = [5, 15, 30]  # seconds — longer gaps give rate limit window time to reset
 
 
 def _create_with_retry(**kwargs) -> anthropic.types.Message:
@@ -163,7 +169,7 @@ def process_chat(messages: list[dict]) -> str:
 
     while True:
         response = _create_with_retry(
-            model="claude-sonnet-4-6",
+            model=_MODEL,
             max_tokens=2048,
             system=SYSTEM_PROMPT,
             tools=TOOLS,

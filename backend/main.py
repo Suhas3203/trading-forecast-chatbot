@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
+import anthropic
 import os
 
 load_dotenv()
@@ -45,14 +46,18 @@ async def chat(request: ChatRequest):
     try:
         reply = process_chat(messages)
         return ChatResponse(reply=reply)
+    except anthropic.AuthenticationError:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid Anthropic API key. Check ANTHROPIC_API_KEY in backend/.env.",
+        )
+    except anthropic.RateLimitError:
+        raise HTTPException(
+            status_code=429,
+            detail="Anthropic API rate limit reached. Please wait a moment and try again.",
+        )
     except Exception as e:
-        err = str(e)
-        if "rate_limit" in err or "429" in err:
-            raise HTTPException(
-                status_code=429,
-                detail="Anthropic API rate limit reached. Please wait a moment and try again.",
-            )
-        raise HTTPException(status_code=500, detail=err)
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/api/market/overview")
